@@ -39,8 +39,15 @@ ft_strcmp:
     cmp     eax, edx            ; 
     jne     .calculate_diff     ; if the char's are different get the value
     cmp     eax, 0              ; see if t is the end of the string "\0"
-    je      ret                 ; return RAX (previously set at 0)
+    jmp    .done                ; return RAX (previously set at 0)
     inc     rdi                 ; increment RDI (s1)
     inc     rsi                 ; increment RSI(s2)
     jmp     .loop
+
+.calculate_diff:
+    sub    eax, edx             ; substract s2 from s1
+    jmp    .done
+
+.done:
+    ret
     
