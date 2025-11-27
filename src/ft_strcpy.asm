@@ -31,7 +31,7 @@ ft_strcpy:
 
 .loop:
     mov     dl, byte [rsi]  ; load byte from src
-    move    byte [rdi], dl  ; store byte into dest
+    mov     byte [rdi], dl  ; store byte into dest
     inc     rsi             ; advance src pointer
     inc     rdi             ; advance dest pointer
     cmp     dl, 0           ; check if it is the end of the string "\0"
