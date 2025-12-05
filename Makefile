@@ -1,5 +1,7 @@
-NAME = libasm
-CFLAGS	= -Wall -Werror -Wextra -g #-fsanitize=address
+NAME = libasm.a
+NA = nasm
+NA_FLAGS = -f macho64
+FLAGS	= -Wall -Werror -Wextra -g #-fsanitize=address
 
 MANDATORY_SRC = ft_strlen.s\
 				ft_strcpy.s\
@@ -10,50 +12,42 @@ MANDATORY_SRC = ft_strlen.s\
 
 MANDATORY_PATH = src/
 
-MANDATORY_OBJ	=	$(MANDATORY_SRC:%.c=$(MANDATORY_PATH)%.o)
+MANDATORY_OBJ	=	$(MANDATORY_SRC:%.s=$(MANDATORY_PATH)%.o)
 
-BONUS_SRC = ft_atoi_base.s\
-			ft_list-push_front.s\
-			ft-list_size.s\
-			ft_list_sort.s\
-			ft-list_remove.s\
+BONUS_SRC = ft_atoi_base_bonus.s\
+			ft_list_push_front_bonus.s\
+			ft_list_size_bonus.s\
+			ft_list_sort_bonus.s\
+			ft_list_remove_if_bonus.s\
 
 BONUS_PATH = src_bonus/
 
-BONUS_OBJ	=	$(BONUS_SRC:%.c=$(BONUS_PATH)%.o)
-
+BONUS_OBJ	=	$(BONUS_SRC:%.s=$(BONUS_PATH)%.o)
 
 all: $(NAME)
 
-# Generate list.inc from list.h
-# -dM tells the preprocessor to dump all macros it knows, instead of compiling it just prints out the #define lines 
-# -E run only the preprocessor stage (no compiling, no assembling). You get the preprocessor output
-# $< = the first prerequisite (here is the input file: list.h)
-# > $@ redirects the result into the target file (here list.inc). The filtered macros are written into list.inc
-#
-list.inc: list.h
-	$(CC) -dM -E $< | grep '^#define LIST'_ > $@
+show:
+	echo $(OBJS_FILES)
 
 $(NAME): $(MANDATORY_OBJ)
-	ar -rcs $@ $^
+	ar rcs $(NAME) $(MANDATORY_OBJ)
+	ranlib $(NAME)
 
-bonus: $(MANDATORY_OBJ) $(BONUS_OBJ)
-	ar -rcs $(NAME) $(MANDATORY_OBJ) $(BONUS_OBJ)
+bonus: $(MANDATORY_OBJ) $(BONUS_OBJ) 
+	ar rcs $(NAME) $(MANDATORY_OBJ) $(BONUS_OBJ)
+	ranlib $(NAME)
 
-%.o: %.c $(HEADER_FILES)
-	$(CC) -c $(CFLAGS) -o $@ $< -fPIC
-
-so : $(MANDATORY_OBJ)
-	$(CC) $(MANDATORY_OBJ) $(BONUS_OBJ) -shared -o libasm.so
+%.o: %.s
+	$(NA) $(NA_FLAGS) $< -o $@
 
 clean:
-	$(RM) *.o
+	rm -rf $(MANDATORY_OBJ) $(BONUS_OBJ)
 
 fclean: clean
-	$(RM) $(NAME) list.inc
+	rm -rf $(NAME)
 
 re:
 	$(MAKE) fclean
 	$(MAKE) all
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re

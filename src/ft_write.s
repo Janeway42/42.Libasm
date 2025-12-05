@@ -15,26 +15,34 @@
 ; RAX -> designated return register 
 ; ---------------------------------------------------------------------------------------
 ; For write() this means: 
-; RDI   -> file descriptor
-; RSI   -> pointer to the buffer
-; RDX   -> count 
+; RDI   -> int fd
+; RSI   -> const void *buf 
+; RDX   -> size_t count 
 ; RAX   -> return value 
+; ---------------------------------------------------------------------------------------
+; syscall
+; RAX -> syscall number
+; RDI -> file descriptor 
+; RSI -> pointer to buffer 
+; RDX -> number of bytes to read 
 ; ---------------------------------------------------------------------------------------
 
 section .text
 global  ft_write
+extern __errno_location
 
 ft_write:
 
-	mov	rax, 1				; 1 is the syscall number for write and must be placed in RAX before the syscall 
+	mov	rax, 1				    ; 1 is the syscall number for write and must be placed in RAX before the syscall 
 	syscall
-	cmp	rax, 0 				; check if rax < 0
-	jge	.done				; SF = 0, ZF = 0
+	cmp	rax, 0 				    ; check if rax < 0
+	jge	.done				    ; SF = 0, ZF = 0
 	
-	neg	rax					; converts rax to a positive value (rax = 0 - rax)
-	mov	edi, eax			; copy errno val from RAX (lower 32 bit from RAX) to EDI (lower 32 bit of RDI)
-	call	__erno_location	; call ___error for MacOS. It returns an address pointer to errno
-	mov	[rax], edi			; errno val from EDI copied at the pointer address
+	neg	rax					    ; converts rax to a positive value (rax = 0 - rax)
+	mov	ebx, eax			    ; save errno val from EAX (lower 32 bit from RAX) to EBX (lower 32 bit of RBX)
+	call	__errno_location	; [call ___error] for MacOS. It returns an address pointer to errno
+	mov	dword [rax], ebx	    ; errno val from EBX copied at the pointer address. 
+                                ; assembler requires to know how many bytes to move when memory is referenced. dword = 4 bytes (32 bits)  
 	mov	rax, -1
 	jmp	.done
 

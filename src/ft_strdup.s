@@ -1,5 +1,6 @@
 ; char * strdup(const char *str1);
-; strdup() returns a pointer to the newly allocated string, or a null pointer if an error occurred 
+; strdup() returns a pointer to the duplicated string.
+;   It returns NULL if insufficient memory was available, with errno set to indicate the error (ENOMEM - errno.h).
 
 ; Registers
 ; As per the System V AMD64 ABI convention: 
@@ -18,10 +19,14 @@
 ; RAX   -> return value 
 ; ---------------------------------------------------------------------------------------
 
+%define ENOMEM 12
+
 section .text
 global  ft_strdup
 extern malloc
 extern ft_strlen
+extern ft_strcpy
+extern __errno_location
 
 ft_strdup:
 	
@@ -40,8 +45,11 @@ ft_strdup:
 	jmp .done
 	
 .malloc_fail:
-	pop rsi					; every push must have a pop to balance the stack. the choice for RSI is arbitrary
-	xor rax, rax			; make RAX = 0 to be able to return NULL
+    call	__errno_location	; [call ___error] for MacOS. It returns an address pointer to errno
+	mov	dword [rax], ENOMEM	    ; errno val for ENOMEM (12) copied at the pointer address. 
+
+	pop rsi					    ; every push must have a pop to balance the stack. the choice for RSI is arbitrary
+	xor rax, rax			    ; make RAX = 0 to be able to return NULL
 	jmp .done
 
 .done:

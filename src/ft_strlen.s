@@ -1,5 +1,6 @@
 ; size_t strlen(const char *s);
 ; strlen() returns the number of bytes in the string pointed to by s.
+; strlen does not set errno
 
 ; Registers
 ; As per the System V AMD64 ABI convention: 
@@ -24,13 +25,13 @@ section .text
 global  ft_streln
 
 ft_strlen:
-    xor	rax, rax            ; set RAX (length) counter to 0
+    xor	rax, rax            ; set RAX  to 0 - default return register in this case used as length counter
 							; xor stores in the first operand the result of a bitwise exclusive OR 
                             ; (0 if equal bits and 1 for different bits)
 								
 .loop:
     cmp	byte [rdi + rax], 0 ; compare current byte with 0
-    je	.done               ; if 0 jump to .done
+    je	.done               ; if 0 ('\0') jump to .done
     inc	rax                 ; increment RAX
     jmp	.loop               ; restart .loop    
 

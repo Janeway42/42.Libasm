@@ -1,5 +1,5 @@
-; size_t strlen(const char *s);
-; strlen() returns the number of bytes in the string pointed to by s.
+; int ft_list_size(t_list *begin_list);
+; ft_list_size() does returns an integer (size of the list)
 
 ; Registers
 ; As per the System V AMD64 ABI convention: 
@@ -13,26 +13,31 @@
 ; 
 ; RAX -> designated return register 
 ; ---------------------------------------------------------------------------------------
-; For strlen() this means: 
-; RDI   -> char *s
-; DL    -> (lower 8 bit of RDX) used to hold the current character being copied  
-; (not using AL to hold the copied character in order to preserve the full 64 bit pointer to dest - RAX)
-; RAX   -> return value = number of bytes in string s
+; For ft_list_size() this means: 
+; RDI   -> t_list *begin_list (head pointer)
+
+; RAX   -> return value = the pointer to dest 
 ; ---------------------------------------------------------------------------------------
 
-section .text
-global  ft_streln
+%define NODE_DATA 0
+%define NODE_NEXT 8
+%define NODE_SIZE 16
 
-ft_strlen:
-    xor	rax, rax            ; set RAX (length) counter to 0
+section .text
+global  ft_list_size
+
+ft_list_size:
+    xor	rax, rax            ; set RAX  to 0 - default return register in this case used as length counter
 							; xor stores in the first operand the result of a bitwise exclusive OR 
                             ; (0 if equal bits and 1 for different bits)
-								
+
 .loop:
-    cmp	byte [rdi + rax], 0 ; compare current byte with 0
-    je	.done               ; if 0 jump to .done
-    inc	rax                 ; increment RAX
-    jmp	.loop               ; restart .loop    
+    test rdi, rdi			        ; if NULL test will do "0 AND 0 = 0", and set ZF = 1
+    jz .done
+
+    inc rax				            ; increment rax
+    mov rdi, [rdi + NODE_NEXT]		; move to the next element of the list
+    jmp .loop
 
 .done:
     ret     
