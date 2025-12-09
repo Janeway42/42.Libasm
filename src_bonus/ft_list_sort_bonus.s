@@ -29,9 +29,9 @@
 section .text
 global  ft_list_sort
 
-ft_list_push_front:
-	mov r8, rdi         ; save list 
-	mov r9, rsi         ; save function 
+ft_list_sort:
+	mov r8, rdi			; save list 
+	mov r9, rsi			; save function 
 
 .main_loop:
 	xor rcx, rcx		; set RCX  to 0 - use as counter to determine if list is sorted
@@ -60,16 +60,16 @@ ft_list_push_front:
 	
 .switch:
 	mov rdx, [rdi + NODE_DATA]		; RDX = temp storage for the switch 
-    mov rax, [rsi, NODE_DATA]       ; temp storage to get the value at the memory location 
+    mov rax, [rsi, NODE_DATA]		; temp storage to get the value at the memory location 
 	mov [rdi + NODE_DATA], rax
 	mov [rsi + NODE_DATA], rdx
 	inc rcx 
 	jmp .loop
 	
 .sorted:
-	test rcx, rcx       ; if RCX has not neen incremented in this loop the list is sorted
+	test rcx, rcx			; if RCX has not neen incremented in this loop the list is sorted
 	jz .done            
-	jmp .main_loop      ; else go back once more over the list to sort 
+	jmp .main_loop			; else go back once more over the list to sort 
 
 .done:
 	ret

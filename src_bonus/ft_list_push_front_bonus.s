@@ -33,38 +33,43 @@ extern malloc
 extern __errno_location
 
 ft_list_push_front:
-	push rsp						; align stack 
-	push rdi						; save address of head pointer
-	push rsi						; save data value
-	
-	mov rdi, NODE_SIZE				; set the size to be used by malloc call
-	call malloc						; the pointer to the memory is output in rax
-	test	rax, rax				; if malloc fails and returns a NULL pointer, test will do "0 AND 0 = 0", and set ZF = 1
-	jz		.malloc_fail			; if equal to zero jump to .malloc_fail
-	
-	pop rsi
-	mov [rax + NODE_DATA], rsi		; move the data in the new node 
-	
-	pop rdi
-    mov r9, [rdi]                   ; load the actual address of the head node 
-	mov [rax + NODE_NEXT], r9	; [rdi] = the actual address of the head node 
-	
-	mov [rdi], rax					; move the value of the address of the new head pointer into RDI as address
-	jmp .done
-	
-.malloc_fail:
-    call	__errno_location        ; [call ___error] for MacOS. It returns an address pointer to errno
-    mov	dword [rax], ENOMEM	        ; errno val for ENOMEM (12) copied at the pointer address. 
-	
-    pop rdi
-	pop rsi 
-	jmp .done				
-	
-.done:
-	pop rsp
-	ret
-	
-	; rdi  = addrss of a box that contains the head node address
-	; [rdi] = the actual address of the head node 
-	; pointer - dereferenced pointer
+    test	rdi, rdi
+    jz		.done
+    test	rsi, rsi
+    jz		.done
 
+	push	rsp				; align stack
+	push	rdi				; save begin
+	push	rsi				; save data
+
+	mov		rdi, NODE_SIZE			; set the size to be used by malloc call 
+	xor		rax, rax				; set RAX (default return value) to 0
+	call	malloc wrt ..plt		; the pointer to the memory is output in rax "with respect to the PLT" malloc(sizeof(t_list)) (16)
+	test	rax, rax				; if malloc fails and returns a NULL pointer, test will do "0 AND 0 = 0", and set ZF = 1
+    jz		.malloc_fail			; if equal to zero jump to .malloc_fail
+
+    pop		rsi				; retrieve data
+	pop		rdi				; retrieve begin
+
+	mov		[rax + NODE_DATA], rsi		; move the data in the new node 
+	mov		rcx, [rdi]					
+	mov		[rax + NODE_NEXT], rcx		; new.next = *begin
+	mov		[rdi], rax					; *begin = new
+
+.malloc_fail:
+    call	__errno_location wrt ..plt	; [call ___error] for MacOS. It returns an address pointer to errno "with respect to the PLT" 
+    mov		dword [rax], ENOMEM			; errno val for ENOMEM (12) copied at the pointer address. 
+    xor		rax, rax					; return null
+	jmp		.done	
+
+.done:
+	pop		rsp				; align stack
+	ret
+
+; rdi  = addrss of a box that contains the head node address
+; [rdi] = the actual address of the head node 
+; pointer - dereferenced pointer
+
+; PLT (Procedure Linkage Table) is part of the ELF binary format used on Linux
+; It contains stubs that jump to dynamically linked functions in shared libraries (ex: malloc in libc.so)
+; "wrt ..plt": NASM generates a relocation that tells the linker "resolve this call through the PLT entry for malloc"

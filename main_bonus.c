@@ -1,36 +1,58 @@
 #include <string.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include "libasm.h"
 #include "libasm_bonus.h"
-
-//declare assembly functions and errno
-extern int ft_atoi_base(char *str, char *base)
-extern void ft_list_push_front(t_list **begin_list, void *data);
-extern void ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *));
-extern int ft_list_size(t_list *begin_list);
-extern void ft_list_sort(t_list **begin_list, int (*cmp)());
-extern int errno;
-
-typedef struct  s_list
-{
-    void *data;
-    struct s_list *next;
-}               t_list;
 
 void *free_fct(void *data)
 {
     free(data);
 }
 
+void print_list(t_list *node)
+{
+    t_list *temp_node;
+    temp_node = node;
+
+    while(temp_node != NULL)
+    {
+        printf("|%s| ", (char *)temp_node->data);
+        temp_node = temp_node->next;
+    }
+}
+
 int main()
 {
-    printf("-------------- FT_ATOI_BASE --------------");
+    printf("\n-------------- FT_ATOI_BASE --------------\n");
 
-    printf("-------------- FT_LIST_PUSH_FRONT --------------");
+    printf("\n-------------- FT_LIST_PUSH_FRONT --------------\n");
 
-    printf("-------------- FT_LIST_SIZE --------------");
+    t_list *node = NULL;
 
-    printf("-------------- FT_LIST_SORT --------------");
+    printf("List before: ");
+    print_list(node);
 
-    printf("-------------- FT_LIST_REMOVE_IF --------------");
+    ft_list_push_front(&node, "Four");
+    ft_list_push_front(&node, "Three");
+    ft_list_push_front(&node, "Two");
+    ft_list_push_front(&node, "One");
+
+    printf("\n");
+    printf("List after: ");
+    print_list(node);
+
+    printf("\n-------------- FT_LIST_SIZE --------------\n");
+
+    int size = ft_list_size(node);
+    printf("List size: %d\n", size);
+
+    printf("\n-------------- FT_LIST_SORT --------------\n");
+
+    ft_list_sort(&node, ft_strcmp);
+    printf("\n");
+    printf("List after sort: ");
+    print_list(node);
+
+    printf("\n-------------- FT_LIST_REMOVE_IF --------------\n");
 
 }

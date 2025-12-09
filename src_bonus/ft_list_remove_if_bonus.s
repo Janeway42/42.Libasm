@@ -48,7 +48,7 @@ ft_list_remove_if:
 	
 .remove_first:
 	call rcx						; call free function 
-    mov rax, [r9 + NODE_NEXT]       ; temp storage to get the value at the memory location  
+    mov rax, [r9 + NODE_NEXT]		; temp storage to get the value at the memory location  
 	mov [r9], rax		; connect to the next node jumping the deleted one 
 	test r9, r9						; if NULL test will do "0 AND 0 = 0", and set ZF = 1
 	jz .done
@@ -58,7 +58,7 @@ ft_list_remove_if:
 .loop_rest:
 	mov r8, rdi						; save node we just checked (it now becomes previous)
 	mov rdi, [rdi + NODE_NEXT]		; load next node to be compared 
-	test rdi, rdi                   ; if NULL test will do "0 AND 0 = 0", and set ZF = 1
+	test rdi, rdi					; if NULL test will do "0 AND 0 = 0", and set ZF = 1
 	jz	.done
 	call rdx						; call compare function with first node in RDI and data_ref as s2 IN R
 	jz .remove_rest
@@ -66,9 +66,9 @@ ft_list_remove_if:
 	
 .remove_rest:
 	call rcx						; call free function
-    mov rax, [rdi + NODE_NEXT]       ; temp storage to get the value at the memory location  
+    mov rax, [rdi + NODE_NEXT]		; temp storage to get the value at the memory location  
 	mov [r8 + NODE_NEXT], rax		; connect to the next node jumping the deleted one 
-	mov rdi, r8                     ; add previous in rdi so that it remains previous once .loop-rest begins
+	mov rdi, r8						; add previous in rdi so that it remains previous once .loop-rest begins
 	jmp .loop_rest
 
 .done:
