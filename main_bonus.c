@@ -1,7 +1,6 @@
-#include <stdio.h>
-#include <unistd.h>
+#include <string.h>
 #include <fcntl.h>
-#include <errno.h>
+#include "libasm_bonus.h"
 
 //declare assembly functions and errno
 extern int ft_atoi_base(char *str, char *base)

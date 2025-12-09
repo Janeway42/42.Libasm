@@ -30,27 +30,34 @@ extern __errno_location
 
 ft_strdup:
 	
-	push	rdi				; saves the source pointer on the stack as any function calls (call) can overwrite registers
+	mov rsi, rdi				; copy the string to duplicate in rsi so ft_strcpy can use it later 
+    push rsi					; save str to duplicate
 	
-	call	ft_strlen		; returns length of str1 in RAX
+	call	ft_strlen			; returns length of str1 in RAX
 	
-	mov	rdi, rax			; move size of string in RDI
-	call	malloc
-	test	rax, rax		; if malloc fails and returns a NULL pointer, test will do "0 AND 0 = 0", and set ZF = 1
-	jz		.malloc_fail	; if equal to zero jump to .malloc_fail
-	
-	pop rsi					; restore source pointer from stack in RSI to be used by ft_strcpy
-	mov rdi, rax			; move dest (just allocated) string pointer to rdi to be used by ft_strcpy			
+	mov	rdi, rax				; move size of string in RDI
+    add rdi, 1					; malloc(sizeof + 1)
+	call	malloc wrt ..plt	; "with respect to the PLT" 
+	test	rax, rax			; if malloc fails and returns a NULL pointer, test will do "0 AND 0 = 0", and set ZF = 1
+	jz		.malloc_fail		; if equal to zero jump to .malloc_fail
+    
+	mov rdi, rax				; move dest (just allocated) string pointer to rdi to be used by ft_strcpy		
+    pop rsi						; pop rsi to be used as the second argument by ft_strcpy
 	call ft_strcpy
+    test rax, rax
+    jz  .malloc_fail
 	jmp .done
 	
 .malloc_fail:
-    call	__errno_location	; [call ___error] for MacOS. It returns an address pointer to errno
-	mov	dword [rax], ENOMEM	    ; errno val for ENOMEM (12) copied at the pointer address. 
+    call	__errno_location wrt ..plt	; [call ___error] for MacOS. It returns an address pointer to errno
+	mov	dword [rax], ENOMEM				; errno val for ENOMEM (12) copied at the pointer address. 
 
-	pop rsi					    ; every push must have a pop to balance the stack. the choice for RSI is arbitrary
-	xor rax, rax			    ; make RAX = 0 to be able to return NULL
+	xor rax, rax				; make RAX = 0 to be able to return NULL
 	jmp .done
 
 .done:
 	ret
+
+; PLT (Procedure Linkage Table) is part of the ELF binary format used on Linux
+; It contains stubs that jump to dynamically linked functions in shared libraries (ex: malloc in libc.so)
+; "wrt ..plt": NASM generates a relocation that tells the linker "resolve this call through the PLT entry for malloc"

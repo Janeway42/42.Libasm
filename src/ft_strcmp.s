@@ -30,24 +30,24 @@ global  ft_strcmp
 ft_strcmp:
 
 .loop:
-    movzx eax, byte [rdi]     ; load first char of s1 as unsigned in eax
-    movzx edx, byte [rsi]     ; load first char of s2 as unsigned in edx
+    movzx eax, byte [rdi]	; load first char of s1 as unsigned in eax
+    movzx edx, byte [rsi]	; load first char of s2 as unsigned in edx
     cmp eax, edx
-    jne .different            ; if the char's are different get difference
-    cmp eax, 0                ; see if it is the end of the string "\0"
-    jz  .equal                ; set RAX to 0 and return
-    inc rdi                   ; increment RDI (s1)
-    inc rsi                   ; increment RSI(s2)
+    jne .different			; if the char's are different get difference
+    cmp eax, 0				; see if it is the end of the string "\0"
+    jz  .equal				; set RAX to 0 and return
+    inc rdi					; increment RDI (s1)
+    inc rsi					; increment RSI(s2)
     jmp .loop
 
 .different:
-    sub    eax, edx           ; substract s2 from s1
+    sub    eax, edx			; substract s2 from s1
     jmp    .done
 
 .equal:
-    xor     rax, rax          ; set RAX  to 0 - default return register
-							  ; xor stores in the first operand the result of a bitwise exclusive OR 
-                              ; (0 if equal bits and 1 for different bits)
+    xor     rax, rax		; set RAX  to 0 - default return register
+							; xor stores in the first operand the result of a bitwise exclusive OR 
+							; (0 if equal bits and 1 for different bits)
     jmp     .done
 
 .done:

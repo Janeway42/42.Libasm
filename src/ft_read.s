@@ -32,18 +32,22 @@ extern __errno_location
 
 ft_read:
 
-	mov	rax, 0  				; 0 is the syscall number for read and must be placed in RAX before the syscall 
+	mov	rax, 0				; 0 is the syscall number for read and must be placed in RAX before the syscall 
 	syscall
-	cmp	rax, 0 	    			; check if rax < 0
-	jge	.done				    ; SF = 0, ZF = 0
+	cmp	rax, 0				; check if rax < 0
+	jge	.done				; SF = 0, ZF = 0
 
-	neg	rax					    ; converts rax to a positive value (rax = 0 - rax)
-	mov	ebx, eax			    ; save errno val from EAX (lower 32 bit from RAX) to EBX (lower 32 bit of RBX)
-	call	__errno_location	; [call ___error] for MacOS. It returns an address pointer to errno
-	mov	dword [rax], ebx    	; errno val from EBX copied at the pointer address. 
-                                ; assembler requires to know how many bytes to move when memory is referenced. dword = 4 bytes (32 bits)   
+	neg	rax								; converts rax to a positive value (rax = 0 - rax)
+	mov	ebx, eax						; save errno val from EAX (lower 32 bit from RAX) to EBX (lower 32 bit of RBX)
+	call	__errno_location wrt ..plt	; [call ___error] for MacOS. It returns an address pointer to errno "with respect to the PLT" 
+	mov	dword [rax], ebx				; errno val from EBX copied at the pointer address. 
+										; assembler requires to know how many bytes to move when memory is referenced. dword = 4 bytes (32 bits)   
 	mov	rax, -1
 	jmp	.done
 
 .done:
 	ret
+
+; PLT (Procedure Linkage Table) is part of the ELF binary format used on Linux
+; It contains stubs that jump to dynamically linked functions in shared libraries (ex: malloc in libc.so)
+; "wrt ..plt": NASM generates a relocation that tells the linker "resolve this call through the PLT entry for malloc"

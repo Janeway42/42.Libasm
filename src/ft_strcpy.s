@@ -27,13 +27,16 @@ section .text
 global  ft_strcpy
 
 ft_strcpy:
-    mov rax, rdi        ; save destination pointer (return value) in RAX          
+    xor rax, rax
 
 .loop:
-    mov dl, byte [rsi]  ; load one byte (8 bit) from the memory address in RSI (src)
-    mov byte [rdi], dl  ; store one byte (8 bit) into the memory address in RDI (dest)
-    inc rsi             ; advance src pointer
-    inc rdi             ; advance dest pointer
-    cmp dl, 0           ; check if it is the end of the string "\0"
-    jne .loop           ; if not equal restart the .loop
-    ret                 ; return RAX
+    mov dl, byte [rsi + rax]	; load one byte (8 bit) from the memory address in RSI (src)
+    mov byte [rdi + rax], dl	; store one byte (8 bit) into the memory address in RDI (dest)
+    inc rax
+    cmp dl, 0			; check if it is the end of the string "\0"
+    jne .loop			; if not equal restart the .loop
+    jmp .done
+
+.done
+    mov rax, rdi
+    ret					; return RAX

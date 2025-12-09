@@ -22,18 +22,18 @@
 ; ---------------------------------------------------------------------------------------
 
 section .text
-global  ft_streln
+global  ft_strlen
 
 ft_strlen:
-    xor	rax, rax            ; set RAX  to 0 - default return register in this case used as length counter
+    xor	rax, rax			; set RAX  to 0 - default return register in this case used as length counter
 							; xor stores in the first operand the result of a bitwise exclusive OR 
-                            ; (0 if equal bits and 1 for different bits)
+							; (0 if equal bits and 1 for different bits)
 								
 .loop:
-    cmp	byte [rdi + rax], 0 ; compare current byte with 0
-    je	.done               ; if 0 ('\0') jump to .done
-    inc	rax                 ; increment RAX
-    jmp	.loop               ; restart .loop    
+    cmp	byte [rdi + rax], 0	; compare current byte with 0
+    je	.done				; if 0 ('\0') jump to .done
+    inc	rax					; increment RAX
+    jmp	.loop				; restart .loop    
 
 .done:
     ret     
