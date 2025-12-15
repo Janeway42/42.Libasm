@@ -33,9 +33,13 @@ int main()
 	
 	printf("\n-------------- FT_STRCMP --------------\n\n");
 	
-	const char *cmp1 = "Let's compare this!\n";
-	const char *cmp2 = "Let's divert from it\n";
-    const char *cmp3 = "";
+	// const char *cmp1 = "Let's compare this!\n";
+	// const char *cmp2 = "Let's divert from it\n";
+    // const char *cmp3 = "";
+
+    const char *cmp1 = "1";
+	const char *cmp2 = "20";
+    const char *cmp3 = "8";
 	
 	printf("STRCMP - Comparying different strings outputs: %d\n",ft_strcmp(cmp1, cmp2));
 	printf("STRCMP - Comparying identical strings outputs: %d\n",ft_strcmp(cmp1, cmp1));

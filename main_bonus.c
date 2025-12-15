@@ -4,6 +4,11 @@
 #include "libasm.h"
 #include "libasm_bonus.h"
 
+int compare(void *a, void *b)
+{
+    return strcmp((char *)a, (char *)b);
+}
+
 void *free_fct(void *data)
 {
     free(data);
@@ -19,6 +24,11 @@ void print_list(t_list *node)
         printf("|%s| ", (char *)temp_node->data);
         temp_node = temp_node->next;
     }
+
+    if (temp_node == NULL)
+    {
+        printf("|NULL|\n");
+    }
 }
 
 int main()
@@ -32,10 +42,10 @@ int main()
     printf("List before: ");
     print_list(node);
 
-    ft_list_push_front(&node, "Four");
-    ft_list_push_front(&node, "Three");
-    ft_list_push_front(&node, "Two");
-    ft_list_push_front(&node, "One");
+    ft_list_push_front(&node, "A");
+    ft_list_push_front(&node, "D");
+    ft_list_push_front(&node, "Z");
+    ft_list_push_front(&node, "M");
 
     printf("\n");
     printf("List after: ");
@@ -48,11 +58,17 @@ int main()
 
     printf("\n-------------- FT_LIST_SORT --------------\n");
 
-    ft_list_sort(&node, ft_strcmp);
+    ft_list_sort(&node, &compare);
     printf("\n");
+
     printf("List after sort: ");
     print_list(node);
 
-    printf("\n-------------- FT_LIST_REMOVE_IF --------------\n");
+    // printf("\n-------------- FT_LIST_REMOVE_IF --------------\n");
+
+    // ft_list_remove_if(&node, "20", &strcmp, &free);
+
+    // printf("List after remove: "); 
+    // print_list(node);
 
 }

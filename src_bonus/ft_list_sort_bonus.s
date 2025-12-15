@@ -30,46 +30,81 @@ section .text
 global  ft_list_sort
 
 ft_list_sort:
-	mov r8, rdi			; save list 
-	mov r9, rsi			; save function 
+    test    rdi, rdi       ; test if NULL
+    je      .error_input
+    test    rsi, rsi       ; test if NULL
+    je      .error_input
+
+    ; save callee saved registers 
+    push    rbp
+    push    rbx 
+    push    r12
+    push    r13
+    push    r14
+    push    r15
+    sub     rsp, 8      ; align the stack (6 push * 8 byte) + the function call (which is 8 byte)
+                        ; the stack needs to be 16 yte aligned before any call (ABI requirement)
+
+    mov     rbx, rdi        ; save head 
+    mov     r12, rsi        ; save function 
 
 .main_loop:
-	xor rcx, rcx		; set RCX  to 0 - use as counter to determine if list is sorted
+	xor     r15, r15		; set r15 to 0 - 0 = SORTED, 1 = NOT SORTED
 
-	mov rdi, [r8]		; load head 
-	test rdi, rdi		; if NULL test will do "0 AND 0 = 0", and set ZF = 1
-	jz .done
+    mov     r13, [rbx]      ; load head node
+    test    r13, r13        ; test if NULL
+    jz      .done
 
-	mov rsi, [rdi + NODE_NEXT]		; load next node 
-	test rsi, rsi					; if NULL test will do "0 AND 0 = 0", and set ZF = 1
-	jz .done
-	
-	call r9 			; (cmp)(rdi, rsi)
-	test rax, rax		; if filter sign SF = 1 the result is negative 
-	jns .switch
-	
-.loop:
-	mov rdi, rsi
-	mov rsi, [rsi + NODE_NEXT] 		; load next node to compare 
-	test rsi, rsi					; if NULL test will do "0 AND 0 = 0", and set ZF = 1
-	jz .sorted
-	call r9 						; (cmp)(rdi, rsi)
-	test rax, rax					; SF = 1
-	jns .switch
+    mov     r14, [r13 + NODE_NEXT]      ; load next node 
+    test    r14, r14                    ; test for NULL
+    jz      .done
+
+    mov     rdi, [r13 + NODE_DATA]
+    mov     rsi, [r14 + NODE_DATA]
+	call    r12         ; (cmp)(rdi, rsi)
+    cmp     eax, 0
+    jg     .switch      ; jump if greater than 0
+    
     jmp .loop
+
+
+.loop:
+    mov     r13, r14
+    mov     r14, [r13 + NODE_NEXT]      ; load next node to compare 
+    test    r14, r14                    ; if NULL test will do "0 AND 0 = 0", and set ZF = 1
+    jz      .sorted
+
+    mov     rdi, [r13 + NODE_DATA]
+    mov     rsi, [r14 + NODE_DATA]
+	call    r12 			; (cmp)(rdi, rsi)
+	cmp     eax, 0
+	jg      .switch         ; jump if greater than 0
+    jmp     .loop
 	
 .switch:
-	mov rdx, [rdi + NODE_DATA]		; RDX = temp storage for the switch 
-    mov rax, [rsi, NODE_DATA]		; temp storage to get the value at the memory location 
-	mov [rdi + NODE_DATA], rax
-	mov [rsi + NODE_DATA], rdx
-	inc rcx 
-	jmp .loop
+	mov     rdi, [r13 + NODE_DATA]	
+    mov     rsi, [r14 + NODE_DATA]
+	mov     [r13 + NODE_DATA], rsi
+	mov     [r14 + NODE_DATA], rdi
+
+	mov     r15, 1
+	jmp     .loop
 	
 .sorted:
-	test rcx, rcx			; if RCX has not neen incremented in this loop the list is sorted
-	jz .done            
-	jmp .main_loop			; else go back once more over the list to sort 
+	cmp     r15, 0			; if r15 has not neen incremented in this loop the list is sorted
+	je      .done            
+	jmp     .main_loop			; else go back once more over the list to sort 
+
+.error_input:
+    ret
 
 .done:
+    ; restore stack
+    add     rsp, 8
+    pop     r15
+    pop     r14
+    pop     r13
+    pop     r12
+    pop     rbx
+    pop     rbp
 	ret
