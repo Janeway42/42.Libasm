@@ -6,7 +6,6 @@
 
 int compare(void *a, void *b)
 {
-    // printf("compare: %s, %s\n", (char *)a, (char *)b); 
     return strcmp((char *)a, (char *)b);
 }
 
@@ -51,6 +50,10 @@ int main()
     t_list *empty_node = NULL;
 
     printf("\n-------------- FT_ATOI_BASE --------------\n");
+
+    char *str = "123";
+    char *base = "10";
+    printf("ATOI %s = %d\n", str, ft_atoi_base(str, base));
 
     printf("\n-------------- FT_LIST_PUSH_FRONT --------------\n\n");
 
