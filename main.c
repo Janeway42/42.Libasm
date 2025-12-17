@@ -32,42 +32,46 @@ int main()
 	printf("STRLEN - The line \"%s\" has %ld characters.\n", len3, ft_strlen(len3));
 	
 	printf("\n-------------- FT_STRCMP --------------\n\n");
-	
-	// const char *cmp1 = "Let's compare this!\n";
-	// const char *cmp2 = "Let's divert from it\n";
-    // const char *cmp3 = "";
 
     const char *cmp1 = "1";
 	const char *cmp2 = "20";
     const char *cmp3 = "8";
+
+    printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp1, cmp2, ft_strcmp(cmp1, cmp2));
+	printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp1, cmp1, ft_strcmp(cmp1, cmp1));
+	printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp3, cmp2, ft_strcmp(cmp3, cmp2));
+    printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp2, cmp3, ft_strcmp(cmp2, cmp3));
 	
-	printf("STRCMP - Comparying different strings outputs: %d\n",ft_strcmp(cmp1, cmp2));
-	printf("STRCMP - Comparying identical strings outputs: %d\n",ft_strcmp(cmp1, cmp1));
-	printf("STRCMP - Comparying different strings outputs: %d\n",ft_strcmp(cmp3, cmp2));
-    printf("STRCMP - Comparying different strings outputs: %d\n",ft_strcmp(cmp2, cmp3));
+	const char *cmp4 = "Let's compare this!";
+	const char *cmp5 = "Let's divert from it";
+    const char *cmp6 = "";
+
+    printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp4, cmp5, ft_strcmp(cmp4, cmp5));
+	printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp4, cmp4, ft_strcmp(cmp4, cmp4));
+	printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp6, cmp5, ft_strcmp(cmp6, cmp2));
+    printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp5, cmp6, ft_strcmp(cmp5, cmp6));
 	
-	printf("\n-------------- FT_STRCPY --------------\n");
+	printf("\n-------------- FT_STRCPY --------------\n\n");
 	
     char *str;
     str = malloc(sizeof(char *) * 20);
 	char *cpy1 = "Let's compare this!";
-	char *cpy2 = "ABCDE FGHIJKL?";
-	char *cpy3 = "";
+	char *cpy2 = "";
+	char *cpy3 = "ABCDE FGHIJKL?\n";
 	
     bzero(str, 19);
-    printf("\n");
-    printf("\nSTRCPY - O: |%s|\n", cpy1);
-    printf("STRCPY - C: |%s|\n", ft_strcpy(str, cpy1));
+    printf("STRCPY - OG:   |%s|\n", cpy1);
+    printf("STRCPY - COPY: |%s|\n", ft_strcpy(str, cpy1));
 
     bzero(str, 19);
     printf("\n");
-    printf("STRCPY - O: |%s|\n", cpy2);
-    printf("STRCPY - C: |%s|\n", ft_strcpy(str, cpy2));
+    printf("STRCPY - OG:   |%s|\n", cpy2);
+    printf("STRCPY - COPY: |%s|\n", ft_strcpy(str, cpy2));
 
     bzero(str, 19);
     printf("\n");
-    printf("STRCPY - O: |%s|\n", cpy3);
-    printf("STRCPY - C: |%s|\n", ft_strcpy(str, cpy3));
+    printf("STRCPY - OG:   |%s|\n", cpy3);
+    printf("STRCPY - COPY: |%s|\n", ft_strcpy(str, cpy3));
 
     free(str);
 	
@@ -101,17 +105,6 @@ int main()
 	char buf[32];
     size_t buff_size = sizeof(buf) - 1;
 	
-	// // READ - control test with standard output read
-	// errno = 0; // errno is reset only on failure, so a successful write can display a previously failed errno. 
-	// printf("READ - read from standard outpout - success\nWRITE to stdout: ");
-	// printf("There's lots of text to read here!\n");
-	// ssize_t ret_read = ft_read(STDIN_FILENO, buf, buff_size);
-    // if (ret_read > 0)
-    // {
-    //     buf[ret_read] = '\0';
-    // }
-	// printf("READ - ft_read read %ld characters and errno is set to %d [%s]\n", ret_read, errno, strerror(errno)); 
-	
 	// READ - test with an invalid file descriptor
     errno = 0; // errno is reset only on failure, so a successful write can display a previously failed errno. 
 	printf("\nREAD - invalid file descriptor - failure\n");
@@ -123,8 +116,8 @@ int main()
 	printf("\nREAD - create file, write to it and read from - success\n");
 	FILE *fptr;
 	fptr = fopen("testfiletoread.txt", "w+");	// create file 
-    const char *text_to_add = "Some text to be written here to use as test!";
-	fprintf(fptr, "%s\n", text_to_add);	// write text to it 
+    const char *text_to_add = "Some text to add here!\n";
+	fprintf(fptr, "%s", text_to_add);	// write text to it 
 	fclose(fptr);	// close file
 	
 	int fd_read = open("testfiletoread.txt", O_RDONLY, 0444);
@@ -144,8 +137,9 @@ int main()
 	
 	ft_strdup_test("something to \n copy");
 	ft_strdup_test("");
-	ft_strdup_test("Something much longer here to see if all goes well or the code decides it has had enough of thid!");
+	ft_strdup_test("Something much longer here to see if all goes well or the code decides it has had enough of this!");
 	ft_strdup_test("And one more test \t, because why not!");
+    printf("\n");
 	
 	return 0;
 }

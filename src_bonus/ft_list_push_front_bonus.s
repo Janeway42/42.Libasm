@@ -27,16 +27,20 @@
 %define NODE_SIZE 16
 %define ENOMEM 12
 
+section .data 
+msg db "Incorrect input!\n", 10, 0
+
 section .text
 global  ft_list_push_front
 extern malloc
 extern __errno_location
+extern printf
 
 ft_list_push_front:
-    test	rdi, rdi
-    jz		.done
-    test	rsi, rsi
-    jz		.done
+    test	rdi, rdi        ; test if input is NULL
+    jz		.error_input
+    test	rsi, rsi        ; test if input is NULL
+    jz		.error_input
 
 	push	rsp				; align stack
 	push	rdi				; save begin
@@ -52,7 +56,7 @@ ft_list_push_front:
 	pop		rdi				; retrieve begin
 
 	mov		[rax + NODE_DATA], rsi		; move the data in the new node 
-	mov		rcx, [rdi]					
+	mov		rcx, [rdi]                  ; load head 				
 	mov		[rax + NODE_NEXT], rcx		; new.next = *begin
 	mov		[rdi], rax					; *begin = new
 
@@ -61,6 +65,12 @@ ft_list_push_front:
     mov		dword [rax], ENOMEM			; errno val for ENOMEM (12) copied at the pointer address. 
     xor		rax, rax					; return null
 	jmp		.done	
+
+.error_input:
+    mov     rdi, msg
+    xor     rax, rax
+    call    printf wrt ..plt
+    jmp     .done
 
 .done:
 	pop		rsp				; align stack
