@@ -30,7 +30,7 @@ ft_strcpy:
     xor rax, rax
 
 .loop:
-    mov dl, byte [rsi + rax]	; load one byte (8 bit) from the memory address in RSI (src)
+    mov dl, BYTE [rsi + rax]	; load one byte (8 bit) from the memory address in RSI (src)
     mov byte [rdi + rax], dl	; store one byte (8 bit) into the memory address in RDI (dest)
     inc rax
     cmp dl, 0			; check if it is the end of the string "\0"

@@ -42,8 +42,8 @@ ft_list_sort:
     push    r13
     push    r14
     push    r15
-    sub     rsp, 8      ; align the stack (6 push * 8 byte) + the function call (which is 8 byte)
-                        ; the stack needs to be 16 yte aligned before any call (ABI requirement)
+    sub     rsp, 8          ; align the stack (6 push * 8 byte) + the function call (which is 8 byte)
+                            ; the stack needs to be 16 yte aligned before any call (ABI requirement)
 
     mov     rbx, rdi        ; save head 
     mov     r12, rsi        ; save function 
@@ -61,9 +61,9 @@ ft_list_sort:
 
     mov     rdi, [r13 + NODE_DATA]
     mov     rsi, [r14 + NODE_DATA]
-	call    r12         ; (cmp)(rdi, rsi)
+	call    r12                         ; (cmp)(rdi, rsi)
     cmp     eax, 0
-    jg     .switch      ; jump if greater than 0
+    jg     .switch                      ; jump if greater than 0
     
     jmp .loop
 
@@ -76,24 +76,24 @@ ft_list_sort:
 
     mov     rdi, [r13 + NODE_DATA]
     mov     rsi, [r14 + NODE_DATA]
-	call    r12 			; (cmp)(rdi, rsi)
+	call    r12 			            ; (cmp)(rdi, rsi)
 	cmp     eax, 0
-	jg      .switch         ; jump if greater than 0
+	jg      .switch                     ; jump if greater than 0
     jmp     .loop
 	
 .switch:
-	mov     rdi, [r13 + NODE_DATA]	
-    mov     rsi, [r14 + NODE_DATA]
-	mov     [r13 + NODE_DATA], rsi
-	mov     [r14 + NODE_DATA], rdi
+	mov     rdi, [r13 + NODE_DATA]      ; get data node 1
+    mov     rsi, [r14 + NODE_DATA]      ; get data node 2
+	mov     [r13 + NODE_DATA], rsi      ; swap data node 1
+	mov     [r14 + NODE_DATA], rdi      ; swap data node 2
 
-	mov     r15, 1
+	mov     r15, 1                      ; record the fact that there was a switch done by setting r15 = 1
 	jmp     .loop
 	
 .sorted:
-	cmp     r15, 0			; if r15 has not neen incremented in this loop the list is sorted
+	cmp     r15, 0			            ; if r15 has not modified to 1 in this loop the list is sorted
 	je      .done            
-	jmp     .main_loop			; else go back once more over the list to sort 
+	jmp     .main_loop			        ; else go back once more over the list to sort 
 
 .error_input:
     ret

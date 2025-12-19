@@ -37,7 +37,7 @@ $(NAME): $(MANDATORY_OBJ)
 	$(AR) $(NAME) $(MANDATORY_OBJ)
 
 bonus: $(MANDATORY_OBJ) $(BONUS_OBJ) 
-	ar rcs $(NAME) $(MANDATORY_OBJ) $(BONUS_OBJ)
+	$(AR) $(NAME) $(MANDATORY_OBJ) $(BONUS_OBJ)
 
 %.o: %.s
 	$(NA) $(NA_FLAGS) $< -o $@
@@ -52,4 +52,4 @@ re:
 	$(MAKE) fclean
 	$(MAKE) all
 
-.PHONY: all bonus clean fclean re
+.PHONY: all clean fclean re

@@ -87,7 +87,6 @@ ft_list_remove_if:
  
     mov     rdi, rbx                ; move head data in RDI to be used by free function
     call    r15                     ; call free function 
-    ; call    free wrt ..plt
     
     mov     rbx, [r12]              ; update current
     test    rbx, rbx                ; test if NULL
@@ -115,8 +114,7 @@ ft_list_remove_if:
     mov     [rbp + NODE_NEXT], rax  ; connected to the next node jumping over the node to erase
 
     mov     rdi, rbx                ; move node data in RDI to be used by free function
-    call    r15                   ; call free function 
-    ; call    free wrt ..plt
+    call    r15                     ; call free function 
     
     mov     rbx, [rbp + NODE_NEXT]  ; update current
     test    rbx, rbx                ; test if NULL

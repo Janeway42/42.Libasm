@@ -27,8 +27,8 @@
 %define NODE_SIZE 16
 %define ENOMEM 12
 
-section .data 
-msg db "Incorrect input!\n", 10, 0
+section .data
+msg_err db "Incorrect input!\n", 10, 0
 
 section .text
 global  ft_list_push_front
@@ -67,7 +67,7 @@ ft_list_push_front:
 	jmp		.done	
 
 .error_input:
-    mov     rdi, msg
+    mov     rdi, msg_err
     xor     rax, rax
     call    printf wrt ..plt
     jmp     .done

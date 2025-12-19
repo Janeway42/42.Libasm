@@ -30,8 +30,8 @@ global  ft_strcmp
 ft_strcmp:
 
 .loop:
-    movzx eax, byte [rdi]	; load first char of s1 as unsigned in eax
-    movzx edx, byte [rsi]	; load first char of s2 as unsigned in edx
+    movzx eax, BYTE [rdi]	; load first char of s1 as unsigned in eax
+    movzx edx, BYTE [rsi]	; load first char of s2 as unsigned in edx
     cmp eax, edx
     jne .different			; if the char's are different get difference
     cmp eax, 0				; see if it is the end of the string "\0"

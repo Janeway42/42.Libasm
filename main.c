@@ -48,7 +48,7 @@ int main()
 
     printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp4, cmp5, ft_strcmp(cmp4, cmp5));
 	printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp4, cmp4, ft_strcmp(cmp4, cmp4));
-	printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp6, cmp5, ft_strcmp(cmp6, cmp2));
+	printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp6, cmp2, ft_strcmp(cmp6, cmp2));
     printf("STRCMP - Comparying \"%s\" with \"%s\" -> outputs: %d\n", cmp5, cmp6, ft_strcmp(cmp5, cmp6));
 	
 	printf("\n-------------- FT_STRCPY --------------\n\n");
@@ -124,6 +124,12 @@ int main()
 	ret_read = ft_read(fd_read, buf, buff_size);
 	printf("ft_read read %ld characters and errno is set to %d [%s]\n", ret_read, errno, strerror(errno)); 
     close(fd_read);
+
+    // READ - read from stdin (user input required)
+    printf("\nREAD - read from stdin - Type something and press enter:\n");
+    ret_read = ft_read(0, buf, buff_size);
+    if (ret_read >= 0) buf[ret_read] = '\0';
+    printf("ft_read read %ld characters and errno is set to %d [%s]\n", ret_read, errno, strerror(errno)); 
 
 	// READ - test with a read only file
     errno = 0; // errno is reset only on failure, so a successful write can display a previously failed errno. 
